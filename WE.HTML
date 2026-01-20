@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dinero Ganado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        h1 {
+            font-size: 40px;
+        }
+        p {
+            font-size: 22px;
+        }
+        #dias {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #9f9;
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <h1>$<span id="ganado">0.00</span></h1>
+    <p>Dinero ganado desde<br>
+    19 de enero de 2026 - 9:00 AM</p>
+
+    <div id="dias">
+        Días transcurridos: <span id="diasValor">0</span>
+    </div>
+</div>
+
+<script>
+    const interesMensual = 150;
+    const claveCorrecta = "12345678";
+    const storageKey = "inicioContador";
+
+    const fechaDefecto = new Date(2026, 0, 19, 9, 0, 0);
+
+    let inicio = localStorage.getItem(storageKey)
+        ? new Date(localStorage.getItem(storageKey))
+        : fechaDefecto;
+
+    function actualizar() {
+        const ahora = new Date();
+        let segundos = (ahora - inicio) / 1000;
+        if (segundos < 0) segundos = 0;
+
+        const interesPorSegundo = interesMensual / (30 * 24 * 60 * 60);
+        const ganado = segundos * interesPorSegundo;
+
+        const dias = segundos / (24 * 60 * 60);
+
+        document.getElementById("ganado").textContent = ganado.toFixed(2);
+        document.getElementById("diasValor").textContent = dias.toFixed(2);
+    }
+
+    // RESET OCULTO CON TECLA 7
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "7") {
+            const clave = prompt("Ingrese la clave:");
+
+            if (clave === claveCorrecta) {
+                inicio = new Date();
+                localStorage.setItem(storageKey, inicio.toISOString());
+                alert("Contador reiniciado correctamente.");
+            } else {
+                alert("Clave incorrecta.");
+            }
+        }
+    });
+
+    setInterval(actualizar, 1000);
+    actualizar();
+</script>
+
+</body>
+</html>
